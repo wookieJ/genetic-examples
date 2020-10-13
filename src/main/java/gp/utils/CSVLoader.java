@@ -1,4 +1,4 @@
-package pl.poznan.utils;
+package gp.utils;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;

@@ -1,4 +1,4 @@
-package pl.poznan.gp;
+package gp.squareFunction;
 
 import io.jenetics.prog.op.EphemeralConst;
 import io.jenetics.prog.op.MathOp;
@@ -7,15 +7,16 @@ import io.jenetics.prog.op.Var;
 import io.jenetics.util.ISeq;
 import io.jenetics.util.RandomRegistry;
 
-public class Nodes {
+public class MathNodes {
 
-    static final ISeq<Op<Double>> OPERATIONS = ISeq.of(
+    public static final ISeq<Op<Double>> OPERATIONS = ISeq.of(
             MathOp.ADD,
             MathOp.SUB,
-            MathOp.MUL
+            MathOp.MUL,
+            MathOp.SQR
     );
 
-    static final ISeq<Op<Double>> TERMINALS = ISeq.of(
+    public static final ISeq<Op<Double>> TERMINALS = ISeq.of(
             Var.of("x", 0),
             EphemeralConst.of(() -> (double) RandomRegistry.random().nextInt(10))
     );
