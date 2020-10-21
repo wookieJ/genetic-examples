@@ -3,9 +3,8 @@ package gp.snake.game;
 import java.util.ArrayList;
 
 
-//Controls all the game logic .. most important class in this project.
 public class GameController extends Thread {
-    ArrayList<ArrayList<DataOfSquare>> squares = new ArrayList<ArrayList<DataOfSquare>>();
+    ArrayList<ArrayList<DataOfSquare>> squares;
     Tuple headSnakePos;
     int sizeSnake = 3;
     long speed = 50;
@@ -13,7 +12,7 @@ public class GameController extends Thread {
     boolean changeLayout;
     int windowSize;
 
-    ArrayList<Tuple> positions = new ArrayList<Tuple>();
+    ArrayList<Tuple> positions = new ArrayList<>();
     Tuple foodPosition;
 
     GameController(Tuple positionDepart, int windowSize, boolean changeLayout) {
@@ -28,19 +27,19 @@ public class GameController extends Thread {
         positions.add(headPos);
 
         foodPosition = new Tuple((int) (Math.random() * windowSize - 1), (int) (Math.random() * windowSize - 1));
-//        foodPosition = new Tuple(1, 3);
         spawnFood(foodPosition);
     }
 
-//    public void run() {
-//        while (true) {
-//            moveInterne(directionSnake);
-//            collision();
-//            moveExterne();
-//            deleteTail();
-//            pauser();
-//        }
-//    }
+    public SnakeState runAuto() {
+        moveInterne(directionSnake);
+        if (collision()) {
+            return null;
+        }
+        moveExterne();
+        deleteTail();
+        pauser();
+        return getSnakeState();
+    }
 
     public SnakeState nextStep() {
         moveInterne(directionSnake);
@@ -52,7 +51,6 @@ public class GameController extends Thread {
         return getSnakeState();
     }
 
-    //delay between each move of the snake
     private void pauser() {
         try {
             sleep(speed);
@@ -61,7 +59,6 @@ public class GameController extends Thread {
         }
     }
 
-    //Checking if the snake bites itself or is eating
     private boolean collision() {
         Tuple posCritique = positions.get(positions.size() - 1);
         for (int i = 0; i <= positions.size() - 2; i++) {
@@ -73,7 +70,6 @@ public class GameController extends Thread {
 
         boolean eatingFood = posCritique.getX() == foodPosition.y && posCritique.getY() == foodPosition.x;
         if (eatingFood) {
-            System.out.println("Yummy!");
             sizeSnake = sizeSnake + 1;
             foodPosition = getValAreaNotInSnake();
             spawnFood(foodPosition);
@@ -81,12 +77,14 @@ public class GameController extends Thread {
         return false;
     }
 
-    //Put food in a position and displays it
     private void spawnFood(Tuple foodPositionIn) {
-        squares.get(foodPositionIn.x).get(foodPositionIn.y).lightMeUp(1, this.changeLayout);
+        try {
+            squares.get(foodPositionIn.x).get(foodPositionIn.y).lightMeUp(1, this.changeLayout);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
-    //return a position not occupied by the snake
     private Tuple getValAreaNotInSnake() {
         Tuple p;
         int ranX = (int) (Math.random() * windowSize - 1);
@@ -103,8 +101,6 @@ public class GameController extends Thread {
         return p;
     }
 
-    //Moves the head of the snake and refreshes the positions in the arraylist
-    //1:right 2:left 3:top 4:bottom 0:nothing
     private void moveInterne(int dir) {
         switch (dir) {
             case 4:
@@ -134,7 +130,6 @@ public class GameController extends Thread {
         }
     }
 
-    //Refresh the squares that needs to be 
     private void moveExterne() {
         for (Tuple t : positions) {
             int y = t.getX();
@@ -143,8 +138,6 @@ public class GameController extends Thread {
         }
     }
 
-    //Refreshes the tail of the snake, by removing the superfluous data in positions arraylist
-    //and refreshing the display of the things that is removed
     private void deleteTail() {
         int cmpt = sizeSnake;
         for (int i = positions.size() - 1; i >= 0; i--) {
@@ -172,47 +165,63 @@ public class GameController extends Thread {
                     isEmptyCell(headSnakePos.x + 1, headSnakePos.y),
                     isEmptyCell(headSnakePos.x - 1, headSnakePos.y),
                     isEmptyCell(headSnakePos.x, headSnakePos.y + 1),
-                    getFoodAngle(headSnakePos, foodPosition)
+                    getFoodAngle(foodPosition),
+                    getDistance(headSnakePos, foodPosition)
                 );
             case 3: // top
                 return new SnakeState(
                     isEmptyCell(headSnakePos.x - 1, headSnakePos.y),
                     isEmptyCell(headSnakePos.x + 1, headSnakePos.y),
                     isEmptyCell(headSnakePos.x, headSnakePos.y - 1),
-                    getFoodAngle(headSnakePos, foodPosition)
+                    getFoodAngle(foodPosition),
+                    getDistance(headSnakePos, foodPosition)
                 );
             case 2: // left
                 return new SnakeState(
                     isEmptyCell(headSnakePos.x, headSnakePos.y + 1),
                     isEmptyCell(headSnakePos.x, headSnakePos.y - 1),
                     isEmptyCell(headSnakePos.x - 1, headSnakePos.y),
-                    getFoodAngle(headSnakePos, foodPosition)
+                    getFoodAngle(foodPosition),
+                    getDistance(headSnakePos, foodPosition)
                 );
             case 1: // right
                 return new SnakeState(
                     isEmptyCell(headSnakePos.x, headSnakePos.y - 1),
                     isEmptyCell(headSnakePos.x, headSnakePos.y + 1),
                     isEmptyCell(headSnakePos.x + 1, headSnakePos.y),
-                    getFoodAngle(headSnakePos, foodPosition)
+                    getFoodAngle(foodPosition),
+                    getDistance(headSnakePos, foodPosition)
                 );
         }
         return null;
     }
 
-    // todo - poprawić obliczanie kąta
-    private double getFoodAngle(Tuple headSnakePos, Tuple foodPosition) {
-        double angle1 = Math.toDegrees(
-            (double) (headSnakePos.x - positions.get(0).y) / (headSnakePos.y - positions.get(0).x)
-        );
-//        (y22 - y21) / (x22 - x21)
-        double angle2 = Math.toDegrees(
-            (double) (foodPosition.y - positions.get(positions.size() - 2).x) / (foodPosition.x - positions.get(positions.size() - 2).x)
-        );
-        var angle = angle1 - angle2;
+    private double getDistance(Tuple headSnakePos, Tuple foodPosition) {
+        var distance = Math.sqrt((foodPosition.y - headSnakePos.x) * (foodPosition.y - headSnakePos.x) +
+            (foodPosition.x - headSnakePos.y) * (foodPosition.x - headSnakePos.y));
+        return mapRange(0, 28.28, 0, 1, distance);
+    }
+
+    private double getFoodAngle(Tuple foodPosition) {
+        var line1Y1 = positions.get(positions.size() - 2).y;
+        var line1Y2 = positions.get(positions.size() - 1).y;
+        var line1X1 = positions.get(positions.size() - 2).x;
+        var line1X2 = positions.get(positions.size() - 1).x;
+        var line2Y1 = line1Y1;
+        var line2Y2 = foodPosition.x;
+        var line2X1 = line1X1;
+        var line2X2 = foodPosition.y;
+        double angle1 = Math.atan2(line1Y1 - line1Y2, line1X1 - line1X2);
+        double angle2 = Math.atan2(line2Y1 - line2Y2, line2X1 - line2X2);
+        var angle = Math.toDegrees(angle1 - angle2);
         if (angle < 0) {
             angle *= (-1);
         }
-        return angle;
+        return mapRange(0, 360, 0, 1, angle);
+    }
+
+    public static double mapRange(double a1, double a2, double b1, double b2, double s) {
+        return b1 + ((s - a1) * (b2 - b1)) / (a2 - a1);
     }
 
     private double isEmptyCell(int x, int y) {

@@ -9,6 +9,14 @@ public class Score {
         this.framesNumber = framesNumber;
     }
 
+    public long getSnakeSize() {
+        return snakeSize;
+    }
+
+    public long getFramesNumber() {
+        return framesNumber;
+    }
+
     @Override
     public String toString() {
         return "Score{" +

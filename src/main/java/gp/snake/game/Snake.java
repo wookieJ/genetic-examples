@@ -17,25 +17,19 @@ public class Snake extends JFrame {
     public Snake(int windowSize, boolean showLayout) {
         this.windowSize = windowSize;
         this.showLayout = showLayout;
+        grid = new ArrayList<>();
     }
 
     public void run() {
         createLayout();
-//        var initialX = random.nextInt(width);
-//        var initialY = random.nextInt(height);
-        var initialX = 0;
-        var initialY = 0;
-
-        System.out.printf("Creating new snake(%s,%s)%n", initialX, initialY);
-
+        var initialX = random.nextInt(windowSize);
+        var initialY = random.nextInt(windowSize);
         Tuple position = new Tuple(initialX, initialY);
         this.gameController = new GameController(position, this.windowSize, showLayout);
     }
 
     private void createLayout() {
-        grid = new ArrayList<>();
         ArrayList<DataOfSquare> data;
-
         for (int i = 0; i < windowSize; i++) {
             data = new ArrayList<>();
             for (int j = 0; j < windowSize; j++) {
@@ -43,6 +37,9 @@ public class Snake extends JFrame {
                 data.add(c);
             }
             grid.add(data);
+        }
+        if (grid.size() != 20) {
+            System.out.println("ERROR! " + grid.size());
         }
         if (showLayout) {
             getContentPane().setLayout(new GridLayout(windowSize, windowSize, 0, 0));
@@ -53,7 +50,7 @@ public class Snake extends JFrame {
             }
         }
     }
-    
+
     public SnakeState nextStep(int action) {
         frameNumber++;
         SnakeControl.action(action);
@@ -61,6 +58,6 @@ public class Snake extends JFrame {
     }
 
     public Score getScore() {
-        return new Score(gameController.sizeSnake-1, frameNumber);
+        return new Score(gameController.sizeSnake - 1, frameNumber);
     }
 }
