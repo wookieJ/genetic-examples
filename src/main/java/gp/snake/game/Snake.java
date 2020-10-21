@@ -24,9 +24,6 @@ public class Snake extends JFrame {
         createLayout();
         var initialX = random.nextInt(windowSize);
         var initialY = random.nextInt(windowSize);
-
-//        System.out.printf("Creating new snake(%s,%s)%n", initialX, initialY);
-
         Tuple position = new Tuple(initialX, initialY);
         this.gameController = new GameController(position, this.windowSize, showLayout);
     }
@@ -58,10 +55,6 @@ public class Snake extends JFrame {
         frameNumber++;
         SnakeControl.action(action);
         return gameController.nextStep();
-    }
-
-    public SnakeState runAuto() {
-        return gameController.runAuto();
     }
 
     public Score getScore() {

@@ -3,9 +3,8 @@ package gp.snake.game;
 import java.util.ArrayList;
 
 
-//Controls all the game logic .. most important class in this project.
 public class GameController extends Thread {
-    ArrayList<ArrayList<DataOfSquare>> squares = new ArrayList<ArrayList<DataOfSquare>>();
+    ArrayList<ArrayList<DataOfSquare>> squares;
     Tuple headSnakePos;
     int sizeSnake = 3;
     long speed = 50;
@@ -13,7 +12,7 @@ public class GameController extends Thread {
     boolean changeLayout;
     int windowSize;
 
-    ArrayList<Tuple> positions = new ArrayList<Tuple>();
+    ArrayList<Tuple> positions = new ArrayList<>();
     Tuple foodPosition;
 
     GameController(Tuple positionDepart, int windowSize, boolean changeLayout) {
@@ -28,7 +27,6 @@ public class GameController extends Thread {
         positions.add(headPos);
 
         foodPosition = new Tuple((int) (Math.random() * windowSize - 1), (int) (Math.random() * windowSize - 1));
-//        foodPosition = new Tuple(1, 2);
         spawnFood(foodPosition);
     }
 
@@ -53,7 +51,6 @@ public class GameController extends Thread {
         return getSnakeState();
     }
 
-    //delay between each move of the snake
     private void pauser() {
         try {
             sleep(speed);
@@ -62,7 +59,6 @@ public class GameController extends Thread {
         }
     }
 
-    //Checking if the snake bites itself or is eating
     private boolean collision() {
         Tuple posCritique = positions.get(positions.size() - 1);
         for (int i = 0; i <= positions.size() - 2; i++) {
@@ -81,7 +77,6 @@ public class GameController extends Thread {
         return false;
     }
 
-    //Put food in a position and displays it
     private void spawnFood(Tuple foodPositionIn) {
         try {
             squares.get(foodPositionIn.x).get(foodPositionIn.y).lightMeUp(1, this.changeLayout);
@@ -90,7 +85,6 @@ public class GameController extends Thread {
         }
     }
 
-    //return a position not occupied by the snake
     private Tuple getValAreaNotInSnake() {
         Tuple p;
         int ranX = (int) (Math.random() * windowSize - 1);
@@ -107,8 +101,6 @@ public class GameController extends Thread {
         return p;
     }
 
-    //Moves the head of the snake and refreshes the positions in the arraylist
-    //1:right 2:left 3:top 4:bottom 0:nothing
     private void moveInterne(int dir) {
         switch (dir) {
             case 4:
@@ -138,7 +130,6 @@ public class GameController extends Thread {
         }
     }
 
-    //Refresh the squares that needs to be 
     private void moveExterne() {
         for (Tuple t : positions) {
             int y = t.getX();
@@ -147,8 +138,6 @@ public class GameController extends Thread {
         }
     }
 
-    //Refreshes the tail of the snake, by removing the superfluous data in positions arraylist
-    //and refreshing the display of the things that is removed
     private void deleteTail() {
         int cmpt = sizeSnake;
         for (int i = positions.size() - 1; i >= 0; i--) {
