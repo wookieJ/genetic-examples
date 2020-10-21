@@ -15,9 +15,7 @@ import io.jenetics.engine.Limits;
 import io.jenetics.engine.Problem;
 import io.jenetics.stat.DoubleMomentStatistics;
 import io.jenetics.util.CharSeq;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-import java.util.stream.IntStream;
+import org.apache.commons.lang3.NotImplementedException;
 
 import static io.jenetics.engine.EvolutionResult.toBestPhenotype;
 
@@ -52,7 +50,7 @@ public class WeaselGeneticEngine {
     }
 
     private double getFitness(CharSequence word) {
-        throw new NotImplementedException();
+        throw new NotImplementedException("Implement fitness function");
     }
 
     void start() {

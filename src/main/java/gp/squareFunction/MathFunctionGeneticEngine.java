@@ -16,6 +16,7 @@ import io.jenetics.prog.op.MathExpr;
 import io.jenetics.prog.op.Op;
 import io.jenetics.stat.DoubleMomentStatistics;
 import io.jenetics.util.ISeq;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.time.Duration;
 import java.util.List;
@@ -28,7 +29,6 @@ public class MathFunctionGeneticEngine {
     private double mutation;
     private int depth;
     private int tournament;
-    private int varNumber;
     private ISeq<Op<Double>> operations;
     private ISeq<Op<Double>> terminals;
     private boolean ifPrintStatistics;
@@ -44,7 +44,6 @@ public class MathFunctionGeneticEngine {
         this.mutation = mutation;
         this.depth = depth;
         this.tournament = tournament;
-        this.varNumber = data.get(0).size() - 1;
         this.operations = operations;
         this.terminals = terminals;
         this.ifPrintStatistics = ifPrintStatistics;
@@ -58,7 +57,7 @@ public class MathFunctionGeneticEngine {
         );
 
         Problem<ProgramGene<Double>, ProgramGene<Double>, Double> problem =
-            Problem.of(this::meanSquareError, CODEC);
+            Problem.of(this::fitness, CODEC);
 
         Engine<ProgramGene<Double>, Double> engine = Engine
             .builder(problem)
@@ -88,17 +87,8 @@ public class MathFunctionGeneticEngine {
         }
     }
 
-    private Double meanSquareError(ProgramGene<Double> program) {
-        double result = 0;
-        for (List<Double> datum : data) {
-            result += Math.pow(valueAndExtrapolationDifference(program, datum), 2);
-        }
-        result += program.size();
-        return result / data.size();
-    }
-
-    private double valueAndExtrapolationDifference(ProgramGene<Double> program, List<Double> datum) {
-        return datum.get(varNumber) - program.eval(datum.subList(0, varNumber).toArray(new Double[0]));
+    private Double fitness(ProgramGene<Double> program) {
+        throw new NotImplementedException("Implement fitness function");
     }
 
     @Override

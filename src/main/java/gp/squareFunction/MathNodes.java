@@ -10,14 +10,14 @@ import io.jenetics.util.RandomRegistry;
 public class MathNodes {
 
     public static final ISeq<Op<Double>> OPERATIONS = ISeq.of(
-            MathOp.ADD,
-            MathOp.SUB,
-            MathOp.MUL,
-            MathOp.SQR
+        MathOp.ADD,
+        MathOp.SUB,
+        MathOp.MUL,
+        MathOp.SQR
     );
 
     public static final ISeq<Op<Double>> TERMINALS = ISeq.of(
-            Var.of("x", 0),
-            EphemeralConst.of(() -> (double) RandomRegistry.random().nextInt(10))
+        Var.of("x", 0),
+        EphemeralConst.of(() -> (double) RandomRegistry.random().nextInt(10))
     );
 }
