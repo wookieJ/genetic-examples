@@ -1,10 +1,10 @@
 package gp.squareFunction;
 
+import gp.utils.CSVLoader;
 import io.jenetics.prog.op.Op;
 import io.jenetics.util.ISeq;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import gp.utils.CSVLoader;
 
 import java.util.List;
 
@@ -19,6 +19,6 @@ public class MathFunctionInterpolation {
             return;
         }
         new MathFunctionGeneticEngine(squareFunctionData, 100, population, crossover, mutation, depth,
-                tournament, operations, terminals, true, true).start();
+            tournament, operations, terminals, true, true).start();
     }
 }

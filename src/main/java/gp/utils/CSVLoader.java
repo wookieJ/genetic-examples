@@ -17,11 +17,11 @@ public class CSVLoader {
             String[] values;
             while ((values = csvReader.readNext()) != null) {
                 records.add(Arrays.stream(values)
-                        .map((value) -> {
-                            value = value.replaceAll(",", ".");
-                            return Double.valueOf(value);
-                        })
-                        .collect(Collectors.toList())
+                    .map((value) -> {
+                        value = value.replaceAll(",", ".");
+                        return Double.valueOf(value);
+                    })
+                    .collect(Collectors.toList())
                 );
             }
         } catch (CsvValidationException | IOException e) {
