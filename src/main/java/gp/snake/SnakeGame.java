@@ -30,9 +30,9 @@ public class SnakeGame {
         return Math.pow(result.getSnakeSize() * 5, 3) * result.getFramesNumber();
     }
 
-    public void run() {
+    public void run(int d, int p, double c, double m, int seconds) {
         Codec<ProgramGene<Double>, ProgramGene<Double>> CODEC = Codec.of(
-            Genotype.of(ProgramChromosome.of(5, ProgramNodes.OPERATIONS, ProgramNodes.TERMINALS)),
+            Genotype.of(ProgramChromosome.of(d, ProgramNodes.OPERATIONS, ProgramNodes.TERMINALS)),
             Genotype::getGene
         );
 
@@ -42,11 +42,11 @@ public class SnakeGame {
         Engine<ProgramGene<Double>, Double> engine = Engine
             .builder(problem)
             .maximizing()
-            .populationSize(200)
+            .populationSize(p)
             .survivorsSelector(new RouletteWheelSelector<>())
             .alterers(
-                new SingleNodeCrossover<>(0.7),
-                new Mutator<>(0.1)
+                new SingleNodeCrossover<>(c),
+                new Mutator<>(m)
             )
             .executor(Executors.newSingleThreadExecutor())
             .build();
@@ -54,7 +54,7 @@ public class SnakeGame {
         EvolutionStatistics<Double, DoubleMomentStatistics> statistics = EvolutionStatistics.ofNumber();
 
         ProgramGene<Double> tree = engine.stream()
-            .limit(Limits.byExecutionTime(Duration.ofSeconds(10)))
+            .limit(Limits.byExecutionTime(Duration.ofSeconds(seconds)))
             .peek(statistics)
             .collect(EvolutionResult.toBestResult(CODEC));
 

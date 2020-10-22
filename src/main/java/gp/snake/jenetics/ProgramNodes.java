@@ -19,7 +19,6 @@ public class ProgramNodes {
             }
         }),
         Op.of("POS", 1, it -> it[0] > 0 ? 1.0 : 0.0)
-//        Op.of("&&", 2, it -> it[0] == 1.0 && it[1] == 1.0 ? 1.0 : 0.0)
     );
 
     public static final ISeq<Op<Double>> TERMINALS = ISeq.of(
@@ -27,7 +26,6 @@ public class ProgramNodes {
         Var.of("right", 1),
         Var.of("top", 2),
         Var.of("angle", 3),
-        Var.of("distance", 4),
-        EphemeralConst.of(() -> RandomRegistry.random().nextDouble())
+        Var.of("distance", 4)
     );
 }
