@@ -9,16 +9,13 @@ import io.jenetics.util.RandomRegistry;
 
 public class ProgramNodes {
     public static final ISeq<Op<Double>> OPERATIONS = ISeq.of(
-        Op.of("MUL2", 2, it -> it[0] * it[1]),
         MathOp.ADD,
-        Op.of("gt", 2, it -> {
-            if (it[0] > it[1]) {
-                return 1.0;
-            } else {
-                return 0.0;
-            }
-        }),
-        Op.of("POS", 1, it -> it[0] > 0 ? 1.0 : 0.0)
+        MathOp.MUL,
+        Op.of("ADD3", 3, it -> it[0] + it[1] + it[2]),
+        Op.of("MUL3", 3, it -> it[0] * it[1] * it[2]),
+        Op.of("MUL4", 4, it -> it[0] * it[1] * it[2] * it[3]),
+        Op.of("MUL5", 5, it -> it[0] * it[1] * it[2] * it[3] * it[4]),
+        Op.of("RELU", 1, it -> it[0] > 0 ? it[0] : 0.0)
     );
 
     public static final ISeq<Op<Double>> TERMINALS = ISeq.of(
@@ -26,6 +23,7 @@ public class ProgramNodes {
         Var.of("right", 1),
         Var.of("top", 2),
         Var.of("angle", 3),
-        Var.of("distance", 4)
+        Var.of("distance", 4),
+        EphemeralConst.of(() -> RandomRegistry.random().nextDouble())
     );
 }

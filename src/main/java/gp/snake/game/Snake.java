@@ -54,7 +54,16 @@ public class Snake extends JFrame {
     public SnakeState nextStep(int action) {
         frameNumber++;
         SnakeControl.action(action);
+//        if (showLayout) {
+//            updateScore(getScore());
+//        }
         return gameController.nextStep();
+    }
+
+    private void updateScore(Score score) {
+        var l = new JLabel();
+        l.setText(String.valueOf(score.getSnakeSize()));
+        getContentPane().add(l);
     }
 
     public Score getScore() {

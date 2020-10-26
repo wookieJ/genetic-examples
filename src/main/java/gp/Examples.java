@@ -1,6 +1,7 @@
 package gp;
 
-import gp.snake.SnakeGame;
+import gp.snake.NeuralSnakeGame;
+import gp.snake.neuralNetwork.NeuralNetwork;
 
 public class Examples {
 
@@ -8,6 +9,7 @@ public class Examples {
 //        WeaselInterpolation.run("to be or not to be.", 1000, 0.8, 0.05);
 //        MathFunctionInterpolation.run("data/square_function.csv", MathNodes.OPERATIONS,
 //            MathNodes.TERMINALS, 1000, 0.7, 0.1, 3, 5);
-        new SnakeGame().run(7, 1000, 0.8, 0.1, 240);
+        var network = NeuralNetwork.createNeuralNetwork();
+        new NeuralSnakeGame(network).run(1000, 0.5, 0.1, 1);
     }
 }

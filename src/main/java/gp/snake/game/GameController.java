@@ -1,5 +1,6 @@
 package gp.snake.game;
 
+import javax.swing.*;
 import java.util.ArrayList;
 
 
@@ -9,6 +10,8 @@ public class GameController extends Thread {
     int sizeSnake = 3;
     long speed = 50;
     public static int directionSnake;
+    public static int lastDirNumber;
+    public static int lastDir;
     boolean changeLayout;
     int windowSize;
 
@@ -26,22 +29,24 @@ public class GameController extends Thread {
         Tuple headPos = new Tuple(headSnakePos.getX(), headSnakePos.getY());
         positions.add(headPos);
 
-        foodPosition = new Tuple((int) (Math.random() * windowSize - 1), (int) (Math.random() * windowSize - 1));
+        foodPosition = getValAreaNotInSnake();
+        while (nextRandom()) {
+            foodPosition = getValAreaNotInSnake();
+        }
         spawnFood(foodPosition);
     }
 
-    public SnakeState runAuto() {
-        moveInterne(directionSnake);
-        if (collision()) {
-            return null;
-        }
-        moveExterne();
-        deleteTail();
-        pauser();
-        return getSnakeState();
+    private boolean nextRandom() {
+        if (directionSnake == 3 || directionSnake == 4) {
+            return foodPosition.y == headSnakePos.x;
+        } else return foodPosition.x == headSnakePos.y;
     }
 
     public SnakeState nextStep() {
+        if (lastDirNumber > 25) {
+            lastDirNumber = 0;
+            return null;
+        }
         moveInterne(directionSnake);
         if (collision()) {
             return null;
@@ -49,14 +54,6 @@ public class GameController extends Thread {
         moveExterne();
         deleteTail();
         return getSnakeState();
-    }
-
-    private void pauser() {
-        try {
-            sleep(speed);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     private boolean collision() {
@@ -197,27 +194,32 @@ public class GameController extends Thread {
     }
 
     private double getDistance(Tuple headSnakePos, Tuple foodPosition) {
-        var distance = Math.sqrt((foodPosition.y - headSnakePos.x) * (foodPosition.y - headSnakePos.x) +
-            (foodPosition.x - headSnakePos.y) * (foodPosition.x - headSnakePos.y));
-        return mapRange(0, 28.28, 0, 1, distance);
+        return mapRange(0, 28.28, 0, 1, Math.sqrt((foodPosition.y - headSnakePos.x) * (foodPosition.y - headSnakePos.x) +
+            (foodPosition.x - headSnakePos.y) * (foodPosition.x - headSnakePos.y)));
+//        return Math.sqrt((foodPosition.y - headSnakePos.x) * (foodPosition.y - headSnakePos.x) +
+//            (foodPosition.x - headSnakePos.y) * (foodPosition.x - headSnakePos.y));
     }
 
     private double getFoodAngle(Tuple foodPosition) {
-        var line1Y1 = positions.get(positions.size() - 2).y;
-        var line1Y2 = positions.get(positions.size() - 1).y;
-        var line1X1 = positions.get(positions.size() - 2).x;
-        var line1X2 = positions.get(positions.size() - 1).x;
-        var line2Y1 = line1Y1;
-        var line2Y2 = foodPosition.x;
-        var line2X1 = line1X1;
-        var line2X2 = foodPosition.y;
-        double angle1 = Math.atan2(line1Y1 - line1Y2, line1X1 - line1X2);
-        double angle2 = Math.atan2(line2Y1 - line2Y2, line2X1 - line2X2);
-        var angle = Math.toDegrees(angle1 - angle2);
-        if (angle < 0) {
-            angle *= (-1);
+        double angle;
+        if (directionSnake == 3) { // top
+            var x1 = foodPosition.y - headSnakePos.x;
+            var x2 = headSnakePos.y - foodPosition.x;
+            angle = Math.toDegrees(Math.atan2(x1, x2));
+        } else if (directionSnake == 4) { // bottom
+            var x1 = headSnakePos.x - foodPosition.y;
+            var x2 = foodPosition.x - headSnakePos.y;
+            angle = Math.toDegrees(Math.atan2(x1, x2));
+        } else if (directionSnake == 1) { // right
+            var x1 = foodPosition.x - headSnakePos.y;
+            var x2 = foodPosition.y - headSnakePos.x;
+            angle = Math.toDegrees(Math.atan2(x1, x2));
+        } else { // left
+            var x1 = headSnakePos.y - foodPosition.x;
+            var x2 = headSnakePos.x - foodPosition.y;
+            angle = Math.toDegrees(Math.atan2(x1, x2));
         }
-        return mapRange(0, 360, 0, 1, angle);
+        return mapRange(-180, 180, -1, 1, angle);
     }
 
     public static double mapRange(double a1, double a2, double b1, double b2, double s) {
@@ -236,6 +238,6 @@ public class GameController extends Thread {
             y = 0;
         }
         var color = squares.get(y).get(x).color;
-        return !(color == 0) ? 1.0 : 0.0;
+        return !(color == 0) ? 0.0 : 1.0;
     }
 }
