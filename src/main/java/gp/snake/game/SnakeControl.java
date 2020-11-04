@@ -9,27 +9,57 @@ public class SnakeControl {
         } else {
             GameController.lastDirNumber++;
         }
-        switch (action) {
+        switch (GameController.directionSnake) {
             case 1:    // -> Right 
-                //if it's not the opposite direction
-                if (GameController.directionSnake != 2)
-                    GameController.directionSnake = 1;
+                switch (action) {
+                    case 1:
+                        GameController.directionSnake = 4;
+                        break;
+                    case 2:
+                        GameController.directionSnake = 3;
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case 2:    // -> Left 
-                if (GameController.directionSnake != 1)
-                    GameController.directionSnake = 2;
+                switch (action) {
+                    case 1:
+                        GameController.directionSnake = 3;
+                        break;
+                    case 2:
+                        GameController.directionSnake = 4;
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case 3:    // -> Top
-                if (GameController.directionSnake != 4)
-                    GameController.directionSnake = 3;
+                switch (action) {
+                    case 1:
+                        GameController.directionSnake = 1;
+                        break;
+                    case 2:
+                        GameController.directionSnake = 2;
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case 4:    // -> Bottom
-                if (GameController.directionSnake != 3)
-                    GameController.directionSnake = 4;
+                switch (action) {
+                    case 1:
+                        GameController.directionSnake = 2;
+                        break;
+                    case 2:
+                        GameController.directionSnake = 1;
+                        break;
+                    default:
+                        break;
+                }
                 break;
             default:
                 break;
         }
     }
-
 }

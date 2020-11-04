@@ -1,6 +1,5 @@
 package gp.snake.game;
 
-import javax.swing.*;
 import java.util.ArrayList;
 
 
@@ -8,7 +7,6 @@ public class GameController extends Thread {
     ArrayList<ArrayList<DataOfSquare>> squares;
     Tuple headSnakePos;
     int sizeSnake = 3;
-    long speed = 50;
     public static int directionSnake;
     public static int lastDirNumber;
     public static int lastDir;

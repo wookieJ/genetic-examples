@@ -48,22 +48,14 @@ public class Snake extends JFrame {
                     getContentPane().add(grid.get(i).get(j).square);
                 }
             }
+            getContentPane().addKeyListener(new KeyboardListener());
         }
     }
 
     public SnakeState nextStep(int action) {
         frameNumber++;
         SnakeControl.action(action);
-//        if (showLayout) {
-//            updateScore(getScore());
-//        }
         return gameController.nextStep();
-    }
-
-    private void updateScore(Score score) {
-        var l = new JLabel();
-        l.setText(String.valueOf(score.getSnakeSize()));
-        getContentPane().add(l);
     }
 
     public Score getScore() {
