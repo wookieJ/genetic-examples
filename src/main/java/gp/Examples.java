@@ -10,6 +10,6 @@ public class Examples {
 //        MathFunctionInterpolation.run("data/square_function.csv", MathNodes.OPERATIONS,
 //            MathNodes.TERMINALS, 1000, 0.7, 0.1, 3, 5);
         var network = NeuralNetwork.createNeuralNetwork();
-        new NeuralSnakeGame(network, 500).run(0.5, 0.1, 10);
+        new NeuralSnakeGame(network, 1000).run(0.5, 0.1, 5);
     }
 }
