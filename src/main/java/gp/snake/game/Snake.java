@@ -38,7 +38,7 @@ public class Snake extends JFrame {
             }
             grid.add(data);
         }
-        if (grid.size() != 20) {
+        if (grid.size() != windowSize) {
             System.out.println("ERROR! " + grid.size());
         }
         if (showLayout) {
@@ -48,6 +48,10 @@ public class Snake extends JFrame {
                     getContentPane().add(grid.get(i).get(j).square);
                 }
             }
+//            JPanel panel = new JPanel();
+//            JLabel label = new JLabel("Score: 0");
+//            panel.add(label);
+//            getContentPane().add(label);
         }
     }
 

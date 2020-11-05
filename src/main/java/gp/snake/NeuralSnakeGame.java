@@ -12,6 +12,7 @@ import io.jenetics.Genotype;
 import io.jenetics.Mutator;
 import io.jenetics.RouletteWheelSelector;
 import io.jenetics.SinglePointCrossover;
+import io.jenetics.TournamentSelector;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
@@ -46,17 +47,18 @@ public class NeuralSnakeGame {
         var weights = createWeightsFromChromosome(genotype.chromosome());
         var network = NeuralNetwork.setWeights(this.neuralNetwork, weights);
         var result = runSnake(network, 5, false, false);
-        if (result.getSnakeSize() > 20) {
-            runSnake(network, 50, true, false);
+        if (result.getSnakeSize() > 25) {
+            runSnake(network, 20, true, false);
         }
         return valueFromScore(result);
     }
 
     private double valueFromScore(Score result) {
-        return Math.pow(result.getSnakeSize() * 2, 3) * result.getFramesNumber();
+        return result.getSnakeSize() * result.getFramesNumber();
+//        return result.getSnakeSize();
     }
 
-    public void run(double c, double m, int minutes) {
+    public MultiLayerNetwork teachNeuralNetwork(double c, double m, int minutes) {
         final Factory<Genotype<DoubleGene>> gtf = Genotype.of(
             DoubleChromosome.of(-1, 1, genotypeLength)
         );
@@ -65,7 +67,8 @@ public class NeuralSnakeGame {
             .builder(this::fitness, gtf)
             .minimizing()
             .populationSize(population)
-            .survivorsSelector(new EliteSelector<>())
+            .survivorsFraction(0.4)
+//            .survivorsSelector(new EliteSelector<>(10, new TournamentSelector<DoubleGene, Double>(12)))
             .offspringSelector(new RouletteWheelSelector<>())
             .alterers(
                 new SinglePointCrossover<>(c),
@@ -83,9 +86,9 @@ public class NeuralSnakeGame {
             .collect(EvolutionResult.toBestEvolutionResult());
 
         var chromosome = weights.bestPhenotype().genotype().chromosome();
-        System.out.println("End of training, best Fitness: " + weights.bestFitness());var inputs = createWeightsFromChromosome(chromosome);
-        var neuralNetwork = NeuralNetwork.setWeights(this.neuralNetwork, inputs);
-        runSnake(neuralNetwork, 100, true, true);
+        System.out.println("End of training, best Fitness: " + weights.bestFitness());
+        var inputs = createWeightsFromChromosome(chromosome);
+        return NeuralNetwork.setWeights(this.neuralNetwork, inputs);
     }
 
     private Map<String, INDArray> createWeightsFromChromosome(Chromosome<DoubleGene> genotype) {
@@ -114,9 +117,9 @@ public class NeuralSnakeGame {
             );
     }
 
-    private Score runSnake(MultiLayerNetwork network, int speed, boolean visible, boolean printStates) {
+    public Score runSnake(MultiLayerNetwork network, int speed, boolean visible, boolean printStates) {
         generation++;
-        Snake snake = new Snake(20, visible);
+        Snake snake = new Snake(30, visible);
         snake.run();
         if (visible) {
             snake.setTitle("Snake");
@@ -124,7 +127,7 @@ public class NeuralSnakeGame {
             snake.setVisible(true);
         }
         SnakeState state = snake.nextStep(0);
-        long framesTillEnd = 50;
+        long framesTillEnd = 100;
         long maxSize = 2;
         while (state != null && framesTillEnd > 0) {
             var input = inputFromState(state);
@@ -154,7 +157,7 @@ public class NeuralSnakeGame {
         }
         return snake.getScore();
     }
-    
+
 
     private INDArray inputFromState(SnakeState state) {
         var inputArray = new double[][]{{

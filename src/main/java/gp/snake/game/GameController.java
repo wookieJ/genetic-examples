@@ -41,10 +41,10 @@ public class GameController extends Thread {
     }
 
     public SnakeState nextStep() {
-        if (lastDirNumber > 25) {
-            lastDirNumber = 0;
-            return null;
-        }
+//        if (lastDirNumber > 40) {
+//            lastDirNumber = 0;
+//            return null;
+//        }
         moveInterne(directionSnake);
         if (collision()) {
             return null;
