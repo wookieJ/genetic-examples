@@ -7,12 +7,10 @@ import gp.snake.neuralNetwork.NeuralNetwork;
 import io.jenetics.Chromosome;
 import io.jenetics.DoubleChromosome;
 import io.jenetics.DoubleGene;
-import io.jenetics.EliteSelector;
 import io.jenetics.Genotype;
 import io.jenetics.Mutator;
 import io.jenetics.RouletteWheelSelector;
 import io.jenetics.SinglePointCrossover;
-import io.jenetics.TournamentSelector;
 import io.jenetics.engine.Engine;
 import io.jenetics.engine.EvolutionResult;
 import io.jenetics.engine.EvolutionStatistics;
@@ -46,10 +44,10 @@ public class NeuralSnakeGame {
     private Double fitness(Genotype<DoubleGene> genotype) {
         var weights = createWeightsFromChromosome(genotype.chromosome());
         var network = NeuralNetwork.setWeights(this.neuralNetwork, weights);
-        var result = runSnake(network, 5, false, false);
-        if (result.getSnakeSize() > 25) {
-            runSnake(network, 20, true, false);
-        }
+        var result = runSnake(network, 500, true, true);
+//        if (result.getSnakeSize() > 7) {
+//            runSnake(network, 20, true, false);
+//        }
         return valueFromScore(result);
     }
 
@@ -133,9 +131,10 @@ public class NeuralSnakeGame {
             var input = inputFromState(state);
             state = snake.nextStep(network.predict(input)[0]);
             var score = snake.getScore();
+            snake.updateScore(score.getSnakeSize());
             if (score.getSnakeSize() > maxSize) {
-                if (score.getSnakeSize() > 3) {
-                    System.out.println("Gen: " + (generation / population + 1) + "|" + generation + ", size: " + score.getSnakeSize() + ", fr: " + score.getFramesNumber() + " -> " + valueFromScore(score));
+                if (score.getSnakeSize() > 7) {
+                    printGenotypeStatistics(score);
                 }
                 maxSize = score.getSnakeSize();
                 framesTillEnd += 200;
@@ -156,6 +155,15 @@ public class NeuralSnakeGame {
             snake.dispatchEvent(new WindowEvent(snake, WindowEvent.WINDOW_CLOSING));
         }
         return snake.getScore();
+    }
+
+    private void printGenotypeStatistics(Score score) {
+        System.out.println("Generation: " + (generation / population + 1) +
+            ", genotype: " + generation +
+            ", snake size: " + score.getSnakeSize() +
+            ", life time: " + score.getFramesNumber() +
+            ", fitness: " + valueFromScore(score)
+        );
     }
 
 

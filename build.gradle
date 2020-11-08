@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'groovy'
     id 'jacoco'
+    id 'application'
 }
 
 group 'pl.put.poznan'
@@ -37,6 +38,8 @@ tasks.withType(GroovyCompile) {
     groovyOptions.optimizationOptions.indy = true
     options.encoding = 'UTF-8'
 }
+
+mainClassName = 'gp.Examples'
 
 jacoco {
     toolVersion = "0.8.4"
