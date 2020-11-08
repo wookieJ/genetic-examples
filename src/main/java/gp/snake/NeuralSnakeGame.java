@@ -44,10 +44,10 @@ public class NeuralSnakeGame {
     private Double fitness(Genotype<DoubleGene> genotype) {
         var weights = createWeightsFromChromosome(genotype.chromosome());
         var network = NeuralNetwork.setWeights(this.neuralNetwork, weights);
-        var result = runSnake(network, 500, true, true);
-//        if (result.getSnakeSize() > 7) {
-//            runSnake(network, 20, true, false);
-//        }
+        var result = runSnake(network, 5, false, false);
+        if (result.getSnakeSize() > 25) {
+            runSnake(network, 20, true, false);
+        }
         return valueFromScore(result);
     }
 
